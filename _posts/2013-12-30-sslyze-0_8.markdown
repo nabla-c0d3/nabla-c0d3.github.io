@@ -1,0 +1,34 @@
+---
+layout: post
+title: "SSLyze v0.8 released"
+date: 2013-12-30 13:44
+post_author: Alban Diquet
+categories: sslyze ssl
+---
+
+
+I just released a new version of [SSLyze][sslyze-gh], a Python tool that can analyze the SSL configuration of a server by connecting to it.
+
+
+### Changelog
+
+* Additional certificate chain validation using the Apple, Microsoft and Java trust stores in addition to Mozilla's
+* Added support for StartTLS RDP; see --starttls=rdp
+* Greatly improved the reliability and accuracy of scan results by adding an exponential backoff algorithm to retry failed network connections. This will especially impact scans against servers that stop properly answering after several concurrent connections have already been opened. The number of retry attempts can be controlled using --nb_retries
+* Bug fixes including:
+    * Better results when the server requested a client certificate but none was supplied
+    * Clarified text and XML output
+
+
+### Packages
+
+SSLyze requires Python 2.7; the supported platforms are Windows 7 32/64 bits,
+Linux 32/64 bits and OS X 64 bits.
+
+SSLyze is statically linked with OpenSSL 1.0.1e. For this reason, the easiest
+way to run SSLyze is to download one the pre-compiled packages available in
+the [release section][sslyze-release] of the project's page on GitHub.
+
+
+[sslyze-gh]: https://github.com/iSECPartners/sslyze
+[sslyze-release]: https://github.com/iSECPartners/sslyze/releases

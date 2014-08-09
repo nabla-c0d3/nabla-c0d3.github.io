@@ -1,0 +1,22 @@
+# Site settings
+title: In Security
+email: nabla.c0d3@gmail.com
+description: ""
+baseurl: ""
+url: "https://nabla-c0d3.github.io"
+author: "Alban Diquet"
+twitter_username: nabla_c0d3
+github_username:  nabla-c0d3
+
+# Build settings
+markdown: kramdown
+#markdown: redcarpet
+permalink: pretty
+
+
+paginate: 10          # Posts per page on the blog index
+
+highlighter: pygments
+
+#root: /
+permalink: /blog/:year/:month/:day/:title/

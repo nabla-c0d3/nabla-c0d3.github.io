@@ -1,0 +1,33 @@
+---
+layout: post
+title:  "SSLyze v0.6 released"
+date:   2013-01-18 20:19:29
+categories: sslyze ssl
+---
+
+A new version of [SSLyze][sslyze-gh] is now available. SSLyze is a Python tool that can analyze the SSL configuration of a server by connecting to it.
+This new version should be more stable/robust and it also brings new features:
+
+
+### Changelog
+
+* Added support for [Server Name Indication][sni-wiki]; see --sni
+* Partial results are returned when the server requires client authentication but no client certificate was provided
+* Preliminary IPv6 support
+* Various bug fixes and better support of client authentication and HTTPS tunneling
+
+
+### Download
+
+As usual, three packages are available:
+
+* Linux and OS X: SSLyze v0.6 source package [here][sslyze-dl-src]
+* Windows 7 and Python 32 bits: SSLyze v0.6 with OpenSSL 1.0.1c [here][sslyze-dl-win32]
+* Windows 7 and Python 64 bits: SSLyze v0.6 with OpenSSL 1.0.1c [here][sslyze-dl-win64]
+
+
+[sslyze-dl-src]: https://dl.dropbox.com/s/h4cc7q68jdmxay3/sslyze-0.6_src.zip?dl=1
+[sslyze-dl-win32]: https://dl.dropbox.com/s/lexhsfejbjp209e/sslyze-0.6_Windows7_Python32.zip?dl=1
+[sslyze-dl-win64]: https://dl.dropbox.com/s/l194sbqvnuuz2xs/sslyze-0.6_Windows7_Python64.zip?dl=1
+[sslyze-gh]: https://github.com/iSECPartners/sslyze
+[sni-wiki]: http://en.wikipedia.org/wiki/Server_Name_Indication

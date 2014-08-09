@@ -1,0 +1,55 @@
+---
+layout: post
+title:  "SSLyze v 0.9 released - Heartbleed edition"
+date:   2014-04-16 10:00:00
+post_author: Alban Diquet
+categories: ssl sslyze
+---
+
+
+I just released a new version of [SSLyze][sslyze-gh]. This version brings a
+few improvements and bug fixes as well as a new plugin to identify servers
+affected by the [Heartbleed vulnerability][heartbleed-adv].
+
+
+### Heartbleed Testing
+
+To implement the Heartbleed check, I used the methodology [described on Mozilla's
+blog][mozilla-blog], which has the advantage of not directly exploiting the
+vulnerability unlike most Hearbleed-testing scripts that have been released.
+Mozilla's technique does not retrieve memory from the server, thereby avoiding
+server crashes or sensitive data exposure.
+
+Additionally, SSLyze's implementation uses the tool's existing networking code,
+allowing Heartbleed testing against multiple servers at the same time and on
+StartTLS services including XMPP, LDAP, SMTP, FTP and POP. Also, just like all
+of SSLyze's checks, Heartbleed tests can be tunneled through an HTTPS proxy.
+
+
+### Full Changelog
+
+* Experimental support for Heartbleed detection; see `--heartbleed`. Heartbleed
+detection has also been added to `--regular` scans
+* Capped the maximum number of concurrent connections to around 30 per server in
+order to avoid DOSing the scanned servers. Scans are slightly slower but a lot
+less aggressive, resulting in better scan results with less timeout and
+connection errors
+* Support for Basic Authentication when tunneling scans through an HTTPS proxy
+with `--https_tunnel`
+* Bug fixes for IPv6 and XMPP support
+* Updated OpenSSL to 1.0.1g
+* Updated the Apple, Microsoft, Mozilla and Java trust stores
+* Cleaned up the text output of PluginOpenSSLCipherSuites
+
+
+### Download
+
+SSLyze requires Python 2.7; the supported platforms are Windows 7 32/64 bits,
+Linux 32/64 bits and OS X 64 bits. Pre-compiled packages available in
+the [release section][sslyze-release] of the project's page on GitHub.
+
+
+[mozilla-blog]: https://blog.mozilla.org/security/2014/04/12/testing-for-heartbleed-vulnerability-without-exploiting-the-server/
+[heartbleed-adv]: https://isecpartners.github.io/advisory/ssl/2014/04/10/heartbleed-advisory.html
+[sslyze-gh]: https://github.com/iSECPartners/sslyze
+[sslyze-release]: https://github.com/iSECPartners/sslyze/releases
