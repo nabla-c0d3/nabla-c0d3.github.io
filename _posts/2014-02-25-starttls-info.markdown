@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "STARTTLS.info uses SSLyze!"
+title:  "STARTTLS.info Uses SSLyze!"
 date:   2014-02-25 07:51:00
 post_author: Alban Diquet
 categories: ssl sslyze

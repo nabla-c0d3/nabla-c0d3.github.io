@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "SSLyze v0.6 released"
+title:  "SSLyze v0.6 Released"
 date:   2013-01-18 20:19:29
 categories: sslyze ssl
 ---

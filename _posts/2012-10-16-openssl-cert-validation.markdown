@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Certificate Validation With OpenSSL"
+title:  "Certificate Validation with OpenSSL"
 date:   2012-10-16 15:12:29
 categories: ssl openssl
 ---

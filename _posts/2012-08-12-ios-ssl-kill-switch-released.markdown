@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "iOS SSL Kill Switch released"
+title:  "iOS SSL Kill Switch Released"
 date:   2012-08-12 17:13:22
 categories: ios ssl
 ---

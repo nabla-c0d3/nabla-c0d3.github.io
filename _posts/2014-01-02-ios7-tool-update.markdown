@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Tool updates for iOS 7"
+title: "Tool Updates for iOS 7"
 date: 2014-01-02 13:44
 post_author: Alban Diquet
 categories: ios

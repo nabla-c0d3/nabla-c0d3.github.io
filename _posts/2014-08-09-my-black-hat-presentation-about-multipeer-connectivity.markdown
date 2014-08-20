@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Black Hat Presentation About Multipeer Connectivity"
+title: "Multipeer Connectivity at Black Hat US"
 date: 2014-08-09 12:02:06 -0700
 post_author: Alban Diquet
 categories: ios

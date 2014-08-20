@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "iOS certificate pinning code updated for iOS 7"
+title:  "iOS Certificate Pinning Code Updated for iOS 7"
 date:   2014-02-01 07:51:00
 post_author: Alban Diquet
 categories: ios ssl

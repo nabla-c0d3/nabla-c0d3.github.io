@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Intercepting the App Store's traffic on iOS"
+title: "Intercepting the App Store's Traffic on iOS"
 date: 2013-08-20 11:07
 comments: true
 categories: ios
