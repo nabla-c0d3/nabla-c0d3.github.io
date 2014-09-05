@@ -5,7 +5,6 @@ date:   2013-02-19 13:11:22
 categories: ios ssl
 ---
 
-_Note: this article was originally posted on [iSEC Partners' blog][original-post]._
 
 ### SSL Pinning
 
@@ -44,10 +43,12 @@ Specific limitations due to what functions the iOS API exposes to developers and
 
 #### Public key pinning
 
-For various reasons, it is actually better to pin a public key to a domain rather than the whole certificate. Unfortunately, public key pinning can only be partially implemented on iOS. While it is possible to extract the public key from a given certificate using a convoluted series of APIs calls (_SecTrustCreateWithCertificates()_ and _SecTrustCopyPublicKey()_), the anchor certificate for a given certificate chain cannot be accessed. Therefore, as the anchor/CA public key cannot be extracted and validated, only the public key of the leaf or any intermediate certificates can be pinned to a domain.
+[For various reasons][key-pinning], it is actually better to pin a public key to a domain rather than the whole certificate. Unfortunately, public key pinning can only be partially implemented on iOS. While it is possible to extract the public key from a given certificate using a convoluted series of APIs calls (_SecTrustCreateWithCertificates()_ and _SecTrustCopyPublicKey()_), the anchor certificate for a given certificate chain cannot be accessed. Therefore, as the anchor/CA public key cannot be extracted and validated, only the public key of the leaf or any intermediate certificates can be pinned to a domain.
 
 
 #### SSL pinning in webviews
+
+_Update: it is actually possible to implement certificate pinning in webviews using the [NSURLProtocol class][nsurlprotocol-poc]. The initial paragraph about SSL pinning in webviews, which is incorrect, follows:_
 
 On iOS, the _UIWebView_ class can be used to directly embed and display web content inside an app. However, as opposed to regular network communication APIs such as _NSURLConnection_, authentication challenges cannot be reliably handled when using the _UIWebView_ class. Various tricks exist, for example to perform HTTP Basic authentication or to disable certificate validation within a webview through a credential caching mechanism. However, the lack of explicit APIs to configure the webview's behavior makes it unsuitable for SSL pinning.
 
@@ -65,3 +66,5 @@ The [SSL Conservatory][sslcons-gh] on GitHub.
 
 [original-post]: https://www.isecpartners.com/news-events/news/2013/february/ssl-pinning-on-ios.aspx
 [sslcons-gh]: https://github.com/iSECPartners/ssl-conservatory/tree/master/ios
+[nsurlprotocol-poc]: https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/Introduction/Intro.html
+[key-pinning]: https://www.imperialviolet.org/2011/05/04/pinning.html
