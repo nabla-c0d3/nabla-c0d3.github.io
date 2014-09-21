@@ -1,0 +1,100 @@
+---
+layout: post
+title: "SSLyze v 0.10 Released"
+date: 2014-09-21 12:02:06 -0700
+post_author: Alban Diquet
+categories: ssl sslyze
+---
+
+
+I just released a new version of [SSLyze][sslyze-gh] which brings new features
+and improvements. As usual, pre-compiled packages available in the [release
+section][sslyze-release] of the project's page on GitHub.
+
+
+### Diffie-Hellmann Parameters Size
+
+When listing the cipher suites supported by the server, SSLyze will now
+display the size of the Diffie-Hellmann parameters for DHE and ECDHE
+cipher suites. The output looks like this:
+
+    * SSLV3 Cipher Suites:
+      Preferred:
+                 ECDHE-RSA-RC4-SHA             ECDH-256 bits  128 bits
+
+
+The DHE and ECDHE cipher suites are being widely deployed because they provide
+[perfect forward secrecy][eff-pfs]. However, a server using extremely weak
+Diffie-Hellmann parameters would give an attacker the ability to crack the
+session key and decrypt the SSL traffic. Adam Langley wrote a [blog
+post][dh-size] about it:
+
+> So the first way to mess up forward secrecy is to use under sized DH groups.
+Ideally the DH group would match or exceed the RSA key size but 1024-bit DHE
+is arguably better than straight 2048-bit RSA so you can get away with that if
+you want to. If you're using ECDHE then you don't need to worry about it being
+too small because the smallest EC group that clients support (P-256) is far,
+far stronger than 2048-bit RSA anyway.
+
+Major props to [@elvanderb][elvanderb-twitter] who had to mess with OpenSSL
+internals in order to get the DH parameters' properties and implemented this
+feature from scratch!
+
+
+### Full Certificate Chain Returned
+
+Previous versions of SSLyze only returned the server's leaf certificate when
+using the `--certinfo` option. The full certificate chain is now returned in
+the tool's XML output to allow for further processing/validation.
+
+
+### Chrome SHA-1 Deprecation Plugin
+
+Google has started the process of [deprecating SHA1-signed certificates
+][google-sha1] by displaying additional HTTPS warnings in upcoming versions
+of Chrome. The `--chrome_sha1` option can be used to check whether a server's
+certificate chain will be affected by these changes:
+
+    * Google Chrome SHA-1 Deprecation Status:
+      Chrome 41 behavior: AFFECTED - SHA1-signed certificate(s) will trigger the "Secure, but minor errors" icon.
+
+Thanks to [@tomrittervg][tomrittervg-twitter] for coming up with the idea and the initial implementation.
+
+
+### Python no Longer Required on Windows
+
+The Windows release is now packaged as a single executable and no longer
+requires Python.
+
+
+### Full Changelog
+
+* PluginOpenSSLCipherSuites now displays the size of the handshake's Diffie-Hellmann parameters
+* SSLyze on Windows is now packaged as a single .exe file
+* PluginCertInfo now displays the server's full certificate chain instead of its leaf certificate only, in both the console and XML results
+* PluginHSTS now properly detects HSTS headers when receiving HTTP redirections
+* New plugin to check if a server is affected by Chrome's deprecation of SHA1-signed certificates. See --chrome_sha1
+* Clarified the console output of most plugins and checks
+* Bug fixes for XML output and client certificate support
+* Updated OpenSSL to 1.0.1i
+* Updated Microsoft, Apple and Mozilla trust stores
+
+
+### SSLyze is now Hosted on my own GitHub Account
+
+Of lesser importance, I have also moved the SSLyze active repository to my
+[personal GitHub account][sslyze-gh]. The original repository will no longer be
+updated so please update your bookmarks. If you cloned the repo, you can update the
+repo's origin by using the following command:
+
+    git remote set-url origin https://github.com/nabla-c0d3/sslyze.git
+
+
+
+[eff-pfs]: https://www.eff.org/deeplinks/2014/04/why-web-needs-perfect-forward-secrecy
+[sslyze-gh]: https://github.com/nabla-c0d3/sslyze
+[sslyze-release]: https://github.com/nabla-c0d3/sslyze/releases
+[google-sha1]: http://googleonlinesecurity.blogspot.com/2014/09/gradually-sunsetting-sha-1.html
+[dh-size]: https://www.imperialviolet.org/2013/06/27/botchingpfs.html
+[elvanderb-twitter]: https://twitter.com/elvanderb
+[tomrittervg-twitter]: https://twitter.com/tomrittervg
