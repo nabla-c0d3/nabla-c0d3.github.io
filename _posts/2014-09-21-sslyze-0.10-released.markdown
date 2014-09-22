@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "SSLyze v 0.10 Released"
+title: "SSLyze v0.10 Released"
 date: 2014-09-21 12:02:06 -0700
 post_author: Alban Diquet
 categories: ssl sslyze
@@ -67,6 +67,16 @@ The Windows release is now packaged as a single executable and no longer
 requires Python.
 
 
+### SSLyze is now Hosted on my own GitHub Account
+
+Of lesser importance, I have also moved the SSLyze active repository to my
+[personal GitHub account][sslyze-gh]. The original repository will no longer be
+updated so please update your bookmarks. If you cloned the repo, you can update the
+repo's origin by using the following command:
+
+    git remote set-url origin https://github.com/nabla-c0d3/sslyze.git
+
+
 ### Full Changelog
 
 * PluginOpenSSLCipherSuites now displays the size of the handshake's Diffie-Hellmann parameters
@@ -78,16 +88,6 @@ requires Python.
 * Bug fixes for XML output and client certificate support
 * Updated OpenSSL to 1.0.1i
 * Updated Microsoft, Apple and Mozilla trust stores
-
-
-### SSLyze is now Hosted on my own GitHub Account
-
-Of lesser importance, I have also moved the SSLyze active repository to my
-[personal GitHub account][sslyze-gh]. The original repository will no longer be
-updated so please update your bookmarks. If you cloned the repo, you can update the
-repo's origin by using the following command:
-
-    git remote set-url origin https://github.com/nabla-c0d3/sslyze.git
 
 
 
