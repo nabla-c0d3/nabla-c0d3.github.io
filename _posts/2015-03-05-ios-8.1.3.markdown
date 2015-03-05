@@ -1,0 +1,28 @@
+---
+layout: post
+title: "Fix for CVE-2014-4493 in iOS 8.1.3"
+date: 2015-03-05 12:02:06 -0700
+post_author: Alban Diquet
+categories: ios
+---
+
+
+What I thought was the most unexpected thing described in the [MASQUE attack][masque] on iOS was the ability for an App with the same bundle ID, but signed by a different developer identity, to replace the original App already installed on the device; when doing so, [the evil App would then have access the original App's private files][cve-link]!
+
+Among many [other security vulnerabilities][release-notes], Apple fixed this issue with the release of iOS 8.1.3:
+
+> MobileInstallation  
+> Available for: iPhone 4s and later, iPod touch (5th generation) and later, iPad 2 and later  
+> Impact: A malicious enterprise-signed application may be able to take control of the local container for applications already on a device  
+> Description: A vulnerability existed in the application installation process. This was addressed by preventing enterprise applications from overriding existing applications in specific scenarios.
+
+On iOS 8.1.3 if you try to trigger a malicious update, the installation will fail and `mobile_installation_proxy` will return the following error message:
+
+> Upgrade's application-identifier entitlement string (ZRJBFW2XA8.com.package.name) does not match installed application's application-identifier string (G4686YFCAH.com.package.name); rejecting upgrade."
+
+The team ID (which is tied to the developer's signing identity) is now validated to ensure that the old App and the new App use the same one.
+
+[cve-link]: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-4493
+[release-notes]: https://support.apple.com/en-us/HT204245
+[masque]: https://www.fireeye.com/blog/threat-research/2014/11/masque-attack-all-your-ios-apps-belong-to-us.html
+
