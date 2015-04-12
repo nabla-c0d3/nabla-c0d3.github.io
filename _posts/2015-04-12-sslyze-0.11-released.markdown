@@ -1,0 +1,34 @@
+---
+layout: post
+title: "SSLyze v0.11 Released"
+date: 2015-04-12 12:02:06 -0700
+post_author: Alban Diquet
+categories: ssl sslyze
+---
+
+
+I just released a new version of [SSLyze][sslyze-gh] which brings new features and improvements. As usual, pre-compiled packages available in the [release section][sslyze-release] of the project's page on GitHub.
+
+Most of the changes were toward making the XML output more consistent and easier to parse. As a consequence, the updated XML formatting will break any application that was processing XML results from the previous version. However, I've also generated an XML Schema Definition to help developers work with the XML output.
+
+As described in the changelog, additional new features were implemented, most of them coming from pull requests from various contributors including [cjeanneret][cjeanneret], [arirubinstein][arirubinstein], [wolfgangkarall][wolfgangkarall] and [bluec0re][bluec0re]. As always, it is pretty cool to see people getting involved!
+
+### Full Changelog
+
+
+* Added support for Postgres StartTLS; see `--starttls=postgres`
+* Added the `--ca_file` option for specifying a local trust store to validate the server's certificate
+* Added the `--quiet` option to hide any text output when using --xml_out
+* Improved the formatting of the XML output to make it easier to parse and more useful; this will break any tool that was processing the XML output from previous versions, but an XML Schema Definition is now available in SSLyze's root folder
+* Bug fixes for EC certificates, HSTS, XMPP and LDAP
+* Updated OpenSSL to 1.0.2a
+* Updated Microsoft, Apple and Mozilla trust stores
+
+
+
+[sslyze-gh]: https://github.com/nabla-c0d3/sslyze
+[sslyze-release]: https://github.com/nabla-c0d3/sslyze/releases
+[cjeanneret]: https://github.com/cjeanneret
+[arirubinstein]: https://github.com/arirubinstein
+[wolfgangkarall]: https://github.com/wolfgangkarall
+[bluec0re]: https://github.com/bluec0re
