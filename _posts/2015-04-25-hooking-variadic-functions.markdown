@@ -6,7 +6,7 @@ post_author: Alban Diquet
 categories: ios
 ---
 
-If you're used to writing iOS tweaks using theos and the [Logos preprocessor directives][logos-wiki], you may run into problems when trying to hook methods or functions that accept an arbitrary number of arguments. One example of a variadic method is `+ (instancetype)stringWithFormat:(NSString *)format, ...`.
+If you're used to writing iOS tweaks using theos and the [Logos preprocessor directives][logos-wiki], you may run into problems when trying to hook methods or functions that accept an arbitrary number of arguments. One example of a variadic method is _NSString_'s`+ (instancetype)stringWithFormat:(NSString *)format, ...`.
 
 To hook variadic methods or C functions, the Substrate C API has to be used directly. I wrote a quick proof of concept for the function [`open()`][open-man]:
 
