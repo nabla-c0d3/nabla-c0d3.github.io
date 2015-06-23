@@ -68,13 +68,19 @@ To further prevent user tracking, Apple has extended MAC address randomization t
 Apple made some notable changes to the Keychain on iOS 9:
 
 * The physical store where the Keychain cryptographic data is persisted has been moved to the Secure Enclave, the device's cryptographic co-processor (available since the iPhone 5S).
-* The weakest Keychain accessibility class, [`kSecAttrAccessibleAlways`](https://developer.apple.com/library/ios/documentation/Security/Reference/keychainservices/#//apple_ref/doc/constant_group/Keychain_Item_Accessibility_Constants) will be deprecated in iOS 9. This protection class causes the data to not be encrypted at all when stored in the Keychain.
+* The weakest Keychain accessibility class, [`kSecAttrAccessibleAlways`](https://developer.apple.com/library/ios/documentation/Security/Reference/keychainservices/#//apple_ref/doc/constant_group/Keychain_Item_Accessibility_Constants) will be deprecated in iOS 9. This protection class causes the data to not be encrypted at all when stored in the Keychain and has no real use case as `kSecAttrAccessibleAfterFirstUnlock` can always be used instead.
 * When using TouchID to protect Keychain items, [`touchIDAuthenticationAllowableReuseDuration`](https://developer.apple.com/library/prerelease/ios/releasenotes/General/iOS90APIDiffs/modules/LocalAuthentication.html) can be used to avoid re-prompting the user for their fingerprint if they already had a match some time ago.
 
 
 ### Application Passwords
 
-Keychain items can be encrypted using both the device's passcode and an "Application password". Both values are then needed to decrypt and retrieve the item. This allows Apps to control when the data is accessible, for example by storing the Application password on a server, or having it being displayed via a hardware token. Application passwords can be configured using the  [LACredentialType.ApplicationPassword](https://developer.apple.com/library/prerelease/ios/releasenotes/General/iOS90APIDiffs/modules/LocalAuthentication.html) setting.
+Keychain items can now be encrypted using both the device's passcode and an "Application password"; both values are then needed to decrypt and retrieve the item. This allows Apps to control when the data is accessible/decrypted, instead of having the data decrypted as soon as the device is unlocked. Potential use cases include:
+
+* Allowing the user to configure an App-specific passcode to protect the user's authentication token or encryption key; the App would then be able to prompt the user for their App passcode on launch.
+* Storing the Application password on a server and having the App retrieve the password after a successful authentication.
+* Having the Application password being displayed via a hardware token.
+
+Application passwords can be configured using the  [LACredentialType.ApplicationPassword](https://developer.apple.com/library/prerelease/ios/releasenotes/General/iOS90APIDiffs/modules/LocalAuthentication.html) setting.
 
 
 ### Secure Enclave Protected Private Keys
@@ -84,7 +90,7 @@ Keychain items can be encrypted using both the device's passcode and an "Applica
 
 ### Network Extension Points
 
-Extensions were introduced in iOS 8, and are architected around the concept of ["extension points"](https://developer.apple.com/library/ios/documentation/General/Conceptual/ExtensibilityPG/): specific areas of the OS that can be customized using a designed API. Extension points from iOS 8 include for example "Custom Keyboard" and "Share", respectively for customizing the device's keyboard and adding new share buttons to receive content from other Apps. iOS 9 brings several new extension points geared toward network filtering and VPNs:
+Extensions were introduced in iOS 8, and are built around the concept of ["extension points"](https://developer.apple.com/library/ios/documentation/General/Conceptual/ExtensibilityPG/): specific areas of the OS that can be customized using a designed API. Extension points from iOS 8 include for example "Custom Keyboard" and "Share", respectively for customizing the device's keyboard and adding new share buttons to receive content from other Apps. iOS 9 brings several new extension points geared toward network filtering and VPNs:
 
 * The Packet Tunnel Provider extension point, to implement the client-side of a custom VPN tunneling protocol.
 * The App Proxy Provider extension point, to implement the client-side of a custom transparent network proxy protocol.
