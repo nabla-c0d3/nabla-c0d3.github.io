@@ -14,7 +14,7 @@ The issue was that an attacker on the network could downgrade the encryption lev
 
 ![](/images/posts/multipeer-attack.png)
 
-Apple did not fix the core issue, which would require significant changes in the implementation, in order to have each peer validate the security settings exchanged during the handshake after authentication is performed. 
+Apple did not fix the core issue with `MCEncryptionOptional`, as it would require significant changes to the implementation, in order to have each peer validate the security settings exchanged during the handshake _after_ authentication is performed. 
 
 However they changed the default encryption level (used when the App does not explicitly specify one) from `MCEncryptionOptional` to `MCEncryptionRequired`, which is not vulnerable to the downgrade attack. Overall, this change should protect most Apps, but the ideal solution would have been to remove `MCEncryptionOptional` altogether.
 
