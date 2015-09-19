@@ -6,6 +6,8 @@ post_author: Alban Diquet
 categories: ios
 ---
 
+_Update: in iOS 9, [Apple implemented a mitigation][multipeer-ios9] for the downgrade attack I described in the presentation._
+
 Earlier this month, I [spoke at the Black Hat US conference][bh-link] about [Multipeer Connectivity][mc-doc] on iOS and OS X. The slides are available [here][slides-pdf] and this post is follow up article with things I did not have time to talk about during the talk.
 
 
@@ -16,11 +18,11 @@ Earlier this month, I [spoke at the Black Hat US conference][bh-link] about [Mul
 * Enabling authentication causes the protocol to perform a mutually-authenticated DTLS handshake (ie. each side/peer exchanges their certificate).
 * Disabling authentication with encryption enabled results in the usage of Anonymous TLS cipher suites (ie. no certificates get exchanged), which are vulnerable to man-in-the-middle attacks.
 * Disabling both authentication and encryption switches DTLS off; the plaintext UDP protocol is directly used.
-* Overall, most of the authentication and encryption settings work as advertised by the Apple documentation except for MCEncryptionOptional when used with Authentication, which is vulnerable to downgrade attacks.
+* Overall, most of the authentication and encryption settings work as advertised by the Apple documentation except for MCEncryptionOptional when used with Authentication, which is vulnerable to downgrade attacks: ![](/images/posts/multipeer-attack.png)
 
 This diagram extracted from the slide deck summarizes my analysis of Multipeer Connectivity's security settings:
 
-<center> <img src="/images/posts/multipeer-table.png"></img> </center>
+![](/images/posts/multipeer-table.png)
 
 The details on why I "blacklisted" some of the security settings are available in the [slide deck][slides-pdf].
 
@@ -93,3 +95,4 @@ There are other Apple Apps/features that could be leveraging Multipeer Connectiv
 [firechat]: https://itunes.apple.com/us/app/firechat/id719829352?mt=8
 [handoff]: https://www.apple.com/ios/ios8/continuity/
 [homekit]: https://developer.apple.com/homekit/
+[multipeer-ios9]: /blog/2015/09/19/multipeer-connectivity-ios-9/
