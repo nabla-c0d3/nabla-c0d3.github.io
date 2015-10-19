@@ -13,7 +13,7 @@ When Apple released iOS 9 last month, it broke TrustKit; this post explains the 
 ### TrustKit on iOS 8
 
 As explained in our [Black Hat talk][bh-slides], TrustKit worked by patching _SecureTransport_'s `SSLHandshake()` function at runtime. During the SSL handshake, this function gets called multiple times until the handshake is completed.
-Throughout this calls, TrustKit forwarded them to the real `SSLHandshake()`, until it returned `noErr`, which means the handshake was succesful. 
+Throughout these calls, TrustKit just forwarded them to the real `SSLHandshake()`, until it returned `noErr`, which means the handshake was succesful. 
 
 When that specific return value was detected and before returning it to the caller, TrustKit performed SSL pinning validation and changed the return value to an error if the validation had failed.
 
