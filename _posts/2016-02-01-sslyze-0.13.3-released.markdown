@@ -22,7 +22,7 @@ Using SSLyze as a library is a three step process:
 
 The following is a simple example to retrieve the list of SSL 3.0 cipher suites supported by smtp.gmail.com:587:
 
-# Script to get the list of SSLv3 cipher suites supported by smtp.gmail.com
+    # Script to get the list of SSLv3 cipher suites supported by smtp.gmail.com
     hostname = 'smtp.gmail.com'
     try:
         # First we must ensure that the server is reachable
