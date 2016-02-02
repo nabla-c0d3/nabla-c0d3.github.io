@@ -43,7 +43,7 @@ The following is a simple example to retrieve a server's certificate:
     
     # Process the result and print the certificate CN
     for server_info, plugin_command, plugin_result in plugins_process_pool.get_results():
-        if plugin_command == 'certinfo_basic':
+        if plugin_result.plugin_command == 'certinfo_basic':
             print 'Server Certificate CN:'
             print plugin_result.certificate_chain[0].as_dict['subject']['commonName']
 
