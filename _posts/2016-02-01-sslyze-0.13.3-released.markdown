@@ -20,9 +20,9 @@ Using SSLyze as a library is a three step process:
 2. Start SSLyze's process pool (using the `PluginsProcessPool` class) and queue some scan commands for each server. The commands are the same as the ones available in the CLI; you can get a list by running the CLI with `--help`. Each scan command will be run concurrently within the process pool.
 3. Retrieve the result of each scan command and process it. Each result is a subclass of `PluginResult` with attributes that contain the actual result of the scan command run on the server (such as list of supported cipher suites for the `--tlsv1` command). These attributes are specific to each plugin and command but are all documented (within each plugin's module).
 
-The following is a simple example to retrieve a server's certificate:
+The following is a simple example to retrieve the list of SSL 3.0 cipher suites supported by smtp.gmail.com:587:
 
-    # Script to retrieve the certificate CN from smtp.gmail.com:587
+# Script to get the list of SSLv3 cipher suites supported by smtp.gmail.com
     hostname = 'smtp.gmail.com'
     try:
         # First we must ensure that the server is reachable
@@ -39,13 +39,15 @@ The following is a simple example to retrieve a server's certificate:
     plugins_process_pool = PluginsProcessPool(sslyze_plugins)
     
     # Queue a scan command to get the server's certificate
-    plugins_process_pool.queue_plugin_task(server_info, 'certinfo_basic')
+    plugins_process_pool.queue_plugin_task(server_info, 'sslv3')
     
     # Process the result and print the certificate CN
     for server_info, plugin_command, plugin_result in plugins_process_pool.get_results():
-        if plugin_result.plugin_command == 'certinfo_basic':
-            print 'Server Certificate CN:'
-            print plugin_result.certificate_chain[0].as_dict['subject']['commonName']
+        if plugin_result.plugin_command == 'sslv3':
+            # Do something with the result
+            print 'SSLV3 cipher suites'
+            for cipher in plugin_result.accepted_cipher_list:
+                print '    {}'.format(cipher.name)
 
 More complex example are available in the project's repository.
 
