@@ -1,0 +1,65 @@
+---
+layout: post
+title: "SSLyze v0.13.3 Released"
+date: 2016-02-01 13:02:06 -0700
+post_author: Alban Diquet
+categories: ssl sslyze
+---
+
+A new version of [SSLyze](https://github.com/nabla-c0d3/sslyze) is available. I made lots of changes and refactoring to SSLyze (and its [OpenSSL wrapper](https://github.com/nabla-c0d3/nassl))'s internals, which were required in order to be able to:
+
+* Add SSLyze to [PyPi](https://pypi.python.org/pypi/SSLyze/), at long last. This means that you can now install SSLyze by just running `pip install sslyze` on OS X, Linux and Windows. No more ZIP files to download!
+* Turn SSLyze into a Python library: you can now run the same scan commands as the command line tool and process the results directly from Python!
+
+
+### Usage a Python library
+
+Using SSLyze as a library is a three step process:
+
+1. Configure the list of servers to scan and ensure that you can connect to them. This is implemented via the `ServerConnectivityInfo` class.
+2. Start SSLyze's process pool (using the `PluginsProcessPool` class) and queue some scan commands for each server. The commands are the same as the ones available in the CLI; you can get a list by running the CLI with `--help`. Each scan command will be run concurrently within the process pool.
+3. Retrieve the result of each scan command and process it. Each result is a subclass of `PluginResult` with attributes that contain the actual result of the scan command run on the server (such as list of supported cipher suites for the `--tlsv1` command). These attributes are specific to each plugin and command but are all documented (within each plugin's module).
+
+The following is a simple example to retrieve a server's certificate:
+
+    # Script to retrieve the certificate CN from smtp.gmail.com:587
+    hostname = 'smtp.gmail.com'
+    try:
+        # First we must ensure that the server is reachable
+        server_info = ServerConnectivityInfo(hostname=hostname, port=587,
+                                             tls_wrapped_protocol=TlsWrappedProtocolEnum.STARTTLS_SMTP)
+        server_info.test_connectivity_to_server()
+    except ServerConnectivityError as e:
+        raise RuntimeError('Error when connecting to {}: {}'.format(hostname, e.error_msg))
+    
+    # Get the list of available plugins
+    sslyze_plugins = PluginsFinder()
+    
+    # Create a process pool to run scanning commands concurrently
+    plugins_process_pool = PluginsProcessPool(sslyze_plugins)
+    
+    # Queue a scan command to get the server's certificate
+    plugins_process_pool.queue_plugin_task(server_info, 'certinfo_basic')
+    
+    # Process the result and print the certificate CN
+    for server_info, plugin_command, plugin_result in plugins_process_pool.get_results():
+        if plugin_result.plugin_command == 'certinfo_basic':
+            print 'Server Certificate CN:'
+            print plugin_result.certificate_chain[0].as_dict['subject']['commonName']
+
+More complex example are available in the project's repository.
+
+### New plugins
+
+Thanks to contributors [davidgfnet](https://github.com/davidgfnet) and [bcyrill](https://github.com/bcyrill), SSLyze has two new scan commands:
+
+* `--openssl_ccs` for testing the server for the [OpenSSL CCS Injection vulnerability](http://ccsinjection.lepidum.co.jp/).
+* `--fallback` for checking the server's support for the TLS\_FALLBACK\_SCSV cipher suite, which prevents [TLS downgrade attacks](http://www.troyhunt.com/2014/10/everything-you-need-to-know-about.html).
+
+
+### Full Changelog
+
+Head to the project's [Releases tab](https://github.com/nabla-c0d3/nassl/releases) for the full changelog. 
+
+As explained before, I will no longer upload ZIP files with the releases (except for the Windows py2exe build); PyPi or directly cloning the repo are now the right ways to install SSLyze.
+
