@@ -12,6 +12,7 @@ github_username:  nabla-c0d3
 markdown: kramdown
 #markdown: redcarpet
 permalink: pretty
+gems: [jekyll-paginate]
 
 
 paginate: 10          # Posts per page on the blog index
