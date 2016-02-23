@@ -8,7 +8,7 @@ categories: ios ssl
 
 Some time ago, [SSL Kill Switch][ssl-kill-switch-gh] somehow stopped working on the Twitter iOS App, preventing the interception and decryption of the App's HTTPS traffic for reverse-engineering purposes. Twitter was actually one of the first iOS Apps to implement SSL pinning, and I remember using it as a test App when I started working on the first version of SSL Kill Switch, a few years ago.
 
-I finally took the time to investigate this issue and just released [v0.10 of SSL Kill Switch][ssl-kill-switch-dl], which will work on Twitter iOS again.
+I finally took the time to investigate this issue and just released [v0.10 of SSL Kill Switch][ssl-kill-switch-dl], which will work on Twitter iOS again (and any [CocoaSPDY][cocoa-spdy] App).
 
 
 ### Why it stopped working
