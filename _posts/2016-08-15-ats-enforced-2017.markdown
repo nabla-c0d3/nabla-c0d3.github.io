@@ -46,7 +46,9 @@ Specifically, the tradeoffs when using `SFSafariViewController` are the followin
 
 ### Future ATS Requirements
 
-In the ["What's new in Security"][sec-wwdc] WWDC presentation, Apple alluded to future requirements for ATS, most likely to be introduced next year:
+For now, the `NSExceptionRequiresForwardSecrecy` key will not trigger a rejection, but this will most likely change next year. Hence, support for forward secrecy should be deployed on App servers in order to get rid of this ATS exemption.
+
+Also, in the ["What's new in Security"][sec-wwdc] WWDC presentation, Apple alluded to future requirements for ATS, potentially to be introduced next year:
 
 * SHA-1-signed certificates should no longer be used, and they are already [getting blocked in web browsers][sha1-browser].
 * 3DES TLS cipher suites, which are only needed for Windows XP compatibility, should be disabled.
