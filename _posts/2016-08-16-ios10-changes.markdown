@@ -1,0 +1,94 @@
+---
+layout: post
+title: "Security and Privacy Changes in iOS 10"
+date: 2016-08-16 13:02:06 -0700
+post_author: Alban Diquet
+categories: ios
+---
+I just finished watching most of the [WWDC 2016 videos][wwdc-videos] and reviewing the [iOS 10 API diffs][api-diff], and put together some notes about the security and privacy changes brought by iOS 10 that I thought were interesting.
+
+### ATS required by 2017
+
+App Transport Security was introduced last year and by default blocks "unprotected" connections initiated by Apps, ie. connections that do not use HTTPS with the strongest TLS version and cipher suites.
+Because switching servers to the strongest TLS configuration takes time, Apple also allowed App developers to selectively disable ATS requirements by adding exemptions in the App's Info.plist.
+
+This year at WWDC, Apple announced that Apps and their servers will be required to be ATS-compliant by January 2017 or App releases will be blocked when pushed to the App Store. 
+
+The ["Getting Ready for ATS Enforcement in 2017" blog post][ats-post] provides more details about the announcement and what App developers should do to be compliant.
+
+### Purpose strings required
+
+When built for iOS 10, an App will crash if it tries to request access for a data class that does not have a purpose string defined. Purpose string keys where introduced in iOS 6; there is one key defined for each type of privacy-sensitive data (contacts, camera, photo library, etc.). App developers can add these keys to the App's Info.plist to provide a sentence that explains why the App needs access to the data; the explanation then gets displayed in the user-facing permission prompt:
+
+![](/images/posts/ios10-purpose-string.png)
+
+Not providing a purpose string will now crash the App when the permission prompt was going to be displayed. Apple made this change for two reasons:
+
+* It forces App developers to inform the user about the reason why the App needs access to the data.
+* It prevents third-party SDKs within the App from requesting access to data the App developers never intended to access in the first place.
+
+Additionally, there are several new consent alerts in iOS 10, with a corresponding purpose string:
+
+* Media Library, for allowing access to Apple Music subscriber status and playlists.
+* Speech Recognition, for allowing audio files to be sent to Apple for speech transcription done on behalf of the App.
+* SiriKit, for allowing the App to receive Siri requests.
+* TV Provider information (tvOS only), for automatically logging the user into streaming Apps based on their cable subscription.
+
+### Unified Security APIs for certificate and key management
+
+Apple has made a significant effort to extend and standardize the `SecKey` APIs across all Apple platforms (iOS 10, macOS 10.12, tvOS 10 and watchOS 3). This will make it a lot simpler to write code to handle certificates or keys that can be shared across different Apps and platforms.
+
+The `SecKey` APIs [available within the Security framework][security-doc] are used for managing certificates, symmetric/asymmetric keys, and signatures. However, before iOS 10 and macOS 10.12, the functions available for interacting with this type of data behaved differently on iOS compared to macOS, and a lot of the functions were only available on macOS. For example, the `SecCertificateCopyValues()` function needed for extracting the public key from a certificate was not available on iOS, making it [difficult to properly implement SSL pinning][security-list] on iOS.
+
+
+### Stricter controls on Ad tracking
+
+On iOS 10, when the "Limit Ad Tracking" setting is enabled by the user, the Advertiser ID (IDFA) returned to the App will be all 0s.
+
+The App Store review process has always had [strict guidelines][apple-idfa] about when it is acceptable for an App to collect the IDFA, and requires during the App submission flow a confirmation that the user's "Limit Ad Tracking" setting is properly properly taken into account by the App:
+
+![](/images/posts/ios10-limit-ad-tracking.png)
+
+Because the IDFA uniquely tracks a device and is the same value returned to all Apps on a given device, it is sensitive data which for example can be used by analytics SDKs to track a single user across different, unrelated Apps.
+
+Prior to iOS 10, enforcement was only done during the App Store review process and there was no enforcement at the device-level of the "Limit Ad Tracking" setting; in theory, Apps could still query and use the IDFA regardless of the user's choice. With iOS 10, the IDFA will be empty if "Limit Ad Tracking" is enabled, which will put an end to any kind of abuse where users would be tracked regardless of of the tracking preference.
+
+Additionally, Apple will be providing more control and information about ads to the user:
+
+* In the Apple News and App Store Apps, any Ad displayed will have a new "About this Ad" button, which specifies why this Ad was displayed to the user (age range, location, etc.)
+* In the device's privacy settings, a new "Ad Information" screen will provide details about the user's Ad profiling information: the set of data used for displaying Ads targeting this specific user.
+
+### Pasteboard refinements
+
+Along with the general pasteboard (where data gets put when the user manually copies data), named pasteboards have always been available on iOS and work like an App-generated piece of shared memory. Over the years, Apple has been making named pasteboards less and less useful as a hacky inter-App communication mechanism, especially with iOS 7, when named pasteboards could [no longer be shared across Apps from different vendors][ios7-board].
+
+iOS 10 deprecates persistent named pasteboards (ie. pasteboards which continue to exist past app terminations and across system reboots) and Apple is advising developers to use [Shared Containers][pasteboard-doc] instead. Shared Containers were introduced more recently with iOS 8, but fulfill a similar purpose.
+
+There also also additional pasteboard changes with iOS 10:
+
+* Content within the general pasteboard gets automatically synced across the user's devices via Handoff. To exclude some content from Handoff, the `UIPasteboardOptionLocalOnly` option should be used.
+* With the `UIPasteboardOptionExpirationDate`, it is possible to [set an expiration date][pasteboard-doc] for content put in a `UIPasteboard`. For most use cases this should be leveraged by App developers when putting content in the general pasteboard, which is accessible to all Apps.
+
+### Other interesting changes
+
+* [Certificate transparency][cert-transp], which helps detect compromised Certificate Authorities and mis-issued SSL certificates,  can be enforced within an App by adding the `NSRequiresCertificateTransparency` key to the App's App Transport Security Policy. This requires the proper SSL certificates (from a CT-enabled CA such as [Let's Encrypt][lets-encrypt]) and configuration to be deployed on the App's servers.
+
+* The [new unified logging APIs][logging-doc], which supersede ASL (Apple System Logger) and the Syslog APIs, will not log dynamic strings and complex dynamic objects by default, for privacy reasons. Logging of such objects can be forced by declaring the string public using the keyword public in the string format: `%{public}s`.
+
+* For some of the analytics data it is collecting from the user's devices (such as popular words and emojis), Apple is using differential privacy to anonymize the data; this is explained in detail in the ["Engineering Privacy for Your Users"][wwdc] WWDC presentation.
+
+* A new NSURLSession delegate method `URLSession:task:didFinishCollectingMetrics:` is available [for collecting network statistics][nsurlsession-doc] while the App is connecting to its servers. Currently, analytics SDKs generate these statistics by doing method hooking/swizzling on the NSURLConnection and NSURLSession APIs, which can impact stability and performance. This new delegate method provides a cleaner way to generate such statistics.
+
+[logging-doc]: https://developer.apple.com/reference/os/1891852-logging?language=objc
+[nsurlsession-doc]: https://developer.apple.com/reference/foundation/nsurlsessiontaskdelegate/1643148-urlsession?language=objc
+[api-diff]: https://developer.apple.com/library/prerelease/content/releasenotes/General/iOS10APIDiffs/index.html
+[wwdc-videos]: https://developer.apple.com/videos/wwdc2016/
+[ios7-board]: https://developer.apple.com/library/ios/releasenotes/General/RN-iOSSDK-7.0/
+[pasteboard-doc]: https://developer.apple.com/reference/uikit/uipasteboard?language=objc
+[wwdc]: https://developer.apple.com/videos/play/wwdc2016/709/
+[lets-encrypt]: https://letsencrypt.org/certificates/
+[cert-transp]: https://www.certificate-transparency.org/what-is-ct
+[ats-post]: /blog/2016/08/14/ats-enforced-2017/
+[security-list]: https://nabla-c0d3.github.io/blog/2015/08/11/security-framework-wish-list/
+[security-doc]: https://developer.apple.com/reference/security/2092285-security_functions?language=objc
+[apple-idfa]: https://developer.apple.com/library/ios/documentation/LanguagesUtilities/Conceptual/iTunesConnect_Guide/Chapters/SubmittingTheApp.html#//apple_ref/doc/uid/TP40011225-CH33-SW8
