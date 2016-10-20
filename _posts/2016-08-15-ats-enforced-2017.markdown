@@ -6,43 +6,59 @@ post_author: Alban Diquet
 categories: ios ssl
 ---
 
-App Transport Security was [introduced last year][ios9-post] and by default blocks "unprotected" connections initiated by Apps, ie. connections that do not use HTTPS with the strongest TLS version and cipher suites.
+_Edit: This blog post was updated on the 20th of October 2016 to take into account recent changes made by Apple to App Transport Security and how ATS exemptions work; for example, the third-party domain exemptions were removed from the documentation. Apple also released additional details in regards to the App Store review process and potential rejections due to ATS exemptions that are described here._
 
-Because switching servers to the strongest TLS configuration takes time, Apple also allowed App developers to selectively disable ATS requirements in the App's manifest. Exceptions could be set for specific domains and/or specific requirements (for example to allow TLS 1.0 instead of 1.2).
+App Transport Security was [introduced last year with iOS 9][ios9-post] as a security mechanism that blocks "unprotected" connections initiated by Apps, ie. connections that do not use HTTPS with the strongest TLS version and cipher suites.
+
+Because switching servers to the strongest TLS configuration takes time, Apple also allowed developers to disable some or all of ATS' requirements using various exemption keys to be added to the App's _Info.plist_. Exemptions could be set for specific domains and/or specific ATS requirements (for example to allow TLS 1.0 instead of 1.2, or to re-enable plaintext HTTP connections).
 
 ### ATS Enforcement in 2017
 
-This year at WWDC, Apple announced that Apps and their servers will be required to be ATS-compliant by January 2017 or App releases will be blocked when pushed to the App Store. They mentioned specific ATS exemptions that will trigger a rejection, unless a valid justification is supplied:
+This year at WWDC, Apple announced that Apps and their servers will be required to be ATS-compliant by January 2017 or App releases will be blocked when pushed to the App Store. They specified three ATS exemptions that will trigger a rejection, unless a valid justification is supplied:
 
 * `NSAllowsArbitraryLoads`, which disables ATS for **all domains**. ATS can be re-enabled for specific domains by using an exception domain dictionary.
-* `NSExceptionAllowsInsecureHTTPLoads`, which disables ATS for a specific domain "whose security attributes you have control over" to allow insecure HTTP loads to that domain.
-* `NSExceptionMinimumTLSVersion`, which enables support for TLS versions that are older than 1.2 for a specific domain "whose security attributes you have control over".
+* `NSExceptionAllowsInsecureHTTPLoads`,  which disables ATS for a single domain, to allow insecure HTTP loads to that domain.
+* `NSExceptionMinimumTLSVersion`, which enables support for TLS versions that are older than 1.2 for a specific domain.
 
-This means that App developers should focus their efforts on getting rid of these exemptions first (especially `NSAllowsArbitraryLoads`) and update the configuration of their App servers to support HTTPS with TLS 1.2. For now, other ATS exemptions (such as `NSExceptionRequiresForwardSecrecy`) will not trigger a rejection.
+Hence and to avoid a rejection during the Apple App Store review process, care must be taken when building the App's ATS policy, in order to avoid using blacklisted exemptions, or using such exemptions in a way that can be justified to the App Store review team.
 
-### Handling Non-Compliant Third-Party Servers
+There are mainly three different use cases to consider when building the ATS policy:
 
-For third-party servers that the App connects to, Apple mentioned that exemptions could still be used, as a third-party server's configuration is not under the App developer's control. For such servers ("whose security attributes **you don’t control**", as specified in the [Apple documentation][ats-doc]), ATS exemptions that specifically apply to third-party servers should be used: 
+* Servers under the developer team's control that the App connects to.
+* Third-party servers that the App connects to, for example via connections initiated by SDKs.
+* Webviews displaying arbitrary websites to provide a browser-like functionality.
 
-* `NSThirdPartyExceptionAllowsInsecureHTTPLoads`
-* `NSThirdPartyExceptionRequiresForwardSecrecy`
-* `NSThirdPartyExceptionMinimumTLSVersion`
+### Servers Under the Developer's Control
 
-Such exemptions should not trigger a rejection, if they are applied to a domain that is not under the developer's control.
+For App servers under the development team's control (ie. not third-party servers) update the servers' configuration to support HTTPS with TLS 1.2. 
 
-At the App-level and compared to the `NSException` keys, the `NSThirdPartyException` keys currently seem to trigger the exact same behavior regardless of whether the domain is actually under the developer's control or not. However, Apple may eventually rely on the "Associated Domains" entitlement (used for [Universal Links][univ-link] and [Shared Web Credentials][shared-link]) to determine which domains are third-party and which ones aren't; future versions of iOS could for example reject `NSThirdPartyException` keys applied to a domain listed under the "Associated Domains" entitlement (which is, by definition, under the developer's control). Hence, the `NSThirdPartyException` keys should only be used for third-party domains.
+Then, remove any blacklisted exemption (`NSAllowsArbitraryLoads`, `NSExceptionAllowsInsecureHTTPLoads` and `NSExceptionMinimumTLSVersion`) from the App's _Info.plist_ and validate that the App can properly connect to its server endpoints on iOS 9+ devices.
 
-### Handling WebViews
+Other ATS exemptions (such as `NSExceptionRequiresForwardSecrecy`) will not trigger an App Store rejection and, for now, can be left enabled if needed.
 
-To help with ATS compliance, a new exemption will be available in iOS 10: `NSAllowsArbitraryLoadsInWebContent`, which disables ATS for connections initiated from `WKWebview` and `UIWebView`. This will be useful for Apps that have browser-like functionality to display third-party websites (such as opening a restaurant's website from a dining App). For now, this exemption will not trigger a rejection.
+### Third-Party Servers
 
-However, if your App needs to display websites in a browser-like tab, the best approach is to leverage the `SFSafariViewController` introduced in iOS 9, which was specifically designed for this purpose. As mentioned in the [documentation][safari-doc]: "Use the `SFSafariViewController` class if your app lets users view websites from anywhere on the Internet. Use the `WKWebView` class if your app customizes, interacts with, or controls the display of web content."
+For third-party servers that the App connects to, any ATS exemption can be used, including domain-specific blacklisted exemptions, as Apple has stated that not having control of the server was a reasonable justification.
+
+Doing so will require identifying the list of third-party servers the App connects to, in order to be able to add the proper domain-specific ATS exemptions to the App.
+
+### WebViews Displaying Arbitrary Websites
+
+For `UIWebView` and `WKWebView` webviews within the App that are used to display arbitrary websites (to provide a browser-like functionality), a well-defined list of third-party servers the App connects to cannot be built. Hence, Apple has provided two possible solutions for this specific use case.
+
+A new `NSAllowsArbitraryLoadsInWebContent` ATS exemption introduced in iOS 10 can be used to disable ATS in all of the App's webviews. Because this exemption will only work on iOS 10 devices, Apple has also introduced a new behavior in order to allow disabling ATS in webviews on iOS 9 devices: when combining `NSAllowsArbitraryLoadsInWebContent` with `NSAllowsArbitraryLoads`, [the latter exemption will be ignored on iOS 10](https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW59). Even though `NSAllowsArbitraryLoads` will trigger a deeper App review, using these two exemptions together for the webview use-case will be a reasonable justification, according to [Apple statements on the developer forums](https://forums.developer.apple.com/thread/48979).
+
+However, a better, future-proof approach for displaying arbitrary websites is to leverage the `SFSafariViewController` introduced in iOS 9, which was specifically designed for this purpose. As mentioned in the [Apple documentation](https://developer.apple.com/library/ios/documentation/SafariServices/Reference/SFSafariViewController_Ref/index.html): 
+
+> "Use the `SFSafariViewController` class if your app lets users view websites from anywhere on the Internet. Use the `WKWebView` class if your app customizes, interacts with, or controls the display of web content."
 
 Specifically, the tradeoffs when using `SFSafariViewController` are the following:
 
 * ATS is disabled, allowing any website to be browsed regardless of the site's HTTPS configuration.
 * Cookies and website data is shared with Safari, for example allowing the user to stay authenticated in websites accessed from your App.
-* The App developer has very little control on the overall navigation experience compared to `WKWebView`.
+* App developers has very little control on the overall navigation experience compared to `WKWebView`.
+
+When possible `SFSafariViewController` should be leveraged in order to display third-party websites within the App.
 
 ### Future ATS Requirements
 
@@ -53,7 +69,13 @@ Also, in the ["What's new in Security"][sec-wwdc] WWDC presentation, Apple allud
 * SHA-1-signed certificates should no longer be used, and they are already [getting blocked in web browsers][sha1-browser].
 * 3DES TLS cipher suites, which are only needed for Windows XP compatibility, should be disabled.
 
-For additional guidelines, [Mozilla's Server TLS Guide][mozilla-ssl] is a good resource for deploying with a strong TLS configuration on App servers.
+During the presentation, Apple also heavily mentioned Certificate Transparency and OCSP Stapling as technologies that developers should start deploying on their App servers.
+
+### More Information
+
+A few weeks after the WWDC presentation, Apple added a section specifically about ATS and the App Store review process [on the documentation website](https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW59).
+
+Also, a good resource for deploying servers with a strong TLS configuration is [Mozilla's Server TLS Guide][mozilla-ssl].
 
 [shared-link]: https://developer.apple.com/library/ios/documentation/Security/Reference/SharedWebCredentialsRef/
 [univ-link]: https://developer.apple.com/library/ios/documentation/General/Conceptual/AppSearch/UniversalLinks.html
