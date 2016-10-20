@@ -60,6 +60,21 @@ Specifically, the tradeoffs when using `SFSafariViewController` are the followin
 
 When possible `SFSafariViewController` should be leveraged in order to display third-party websites within the App.
 
+### Conclusion
+
+The overall approach the App Store review team will take when it comes to ATS exemptions was [summed up on the Apple developer forums](https://forums.developer.apple.com/thread/48979):
+
+> "The goal here is to flush out those folks who, when ATS was first released, simply turned it off globally and moved on. That will no longer be allowed."
+
+Hence, for a given App going through the App Store review process:
+
+* An easy policy to justify is to have `NSAllowsArbitraryLoads` disabled and a list of domain-specific exemptions for third-party domains the App connects to.
+* A policy that will be harder to justify is to have `NSAllowsArbitraryLoads` enabled and a list of domain-specific “un-exemptions" for the domains you control.
+* Lastly, a policy that will definitely trigger a rejection, as stated by Apple, is to have `NSAllowsArbitraryLoads` enabled with no additional ATS settings.
+
+For more information, Apple added a section specifically about ATS and the App Store review process [on the documentation website](https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW59), a few weeks after the WWDC presentation.
+
+
 ### Future ATS Requirements
 
 For now, the `NSExceptionRequiresForwardSecrecy` key will not trigger a rejection, but this will most likely change next year. Hence, support for forward secrecy should be deployed on App servers in order to get rid of this ATS exemption.
@@ -70,12 +85,6 @@ Also, in the ["What's new in Security"][sec-wwdc] WWDC presentation, Apple allud
 * 3DES TLS cipher suites, which are only needed for Windows XP compatibility, should be disabled.
 
 During the presentation, Apple also heavily mentioned Certificate Transparency and OCSP Stapling as technologies that developers should start deploying on their App servers.
-
-### More Information
-
-A few weeks after the WWDC presentation, Apple added a section specifically about ATS and the App Store review process [on the documentation website](https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW59).
-
-Also, a good resource for deploying servers with a strong TLS configuration is [Mozilla's Server TLS Guide][mozilla-ssl].
 
 [shared-link]: https://developer.apple.com/library/ios/documentation/Security/Reference/SharedWebCredentialsRef/
 [univ-link]: https://developer.apple.com/library/ios/documentation/General/Conceptual/AppSearch/UniversalLinks.html
