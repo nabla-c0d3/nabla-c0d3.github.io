@@ -5,7 +5,7 @@ date:   2013-02-19 13:11:22
 categories: ios ssl
 ---
 
-__Edit: Since I wrote this post, I've released [TrustKit](https://github.com/datatheorem/TrustKit), an iOS library for SSL pinning which is much better than the project described here.__ 
+_Edit: Since I wrote this post, I've released [TrustKit](https://github.com/datatheorem/TrustKit), an iOS library for SSL pinning which is much better than the project described here._
 
 ### SSL Pinning
 
