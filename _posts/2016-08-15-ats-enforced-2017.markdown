@@ -8,6 +8,8 @@ categories: ios ssl
 
 _Edit: This blog post was updated on the 20th of October 2016 to take into account recent changes made by Apple to App Transport Security and how ATS exemptions work; for example, the third-party domain exemptions were removed from the documentation. Apple also released additional details in regards to the App Store review process and potential rejections due to ATS exemptions that are described here._
 
+_Edit 2: On the 21st of December 2016, Apple announced [on its developer portal](https://developer.apple.com/news/?id=12212016b) that the January 1st deadline "has been extended and [Apple] will provide another update when a new deadline is confirmed". I will update this blog post with the new ATS deadline as soon as Apple announces it._
+
 App Transport Security was [introduced last year with iOS 9][ios9-post] as a security mechanism that blocks "unprotected" connections initiated by Apps, ie. connections that do not use HTTPS with the strongest TLS version and cipher suites.
 
 Because switching servers to the strongest TLS configuration takes time, Apple also allowed developers to disable some or all of ATS' requirements using various exemption keys to be added to the App's _Info.plist_. Exemptions could be set for specific domains and/or specific ATS requirements (for example to allow TLS 1.0 instead of 1.2, or to re-enable plaintext HTTP connections).
