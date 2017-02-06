@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "SSL Kill Switch and the New Network Stack on iOS 10"
+title: "SSL Kill Switch and the iOS 10 Network Stack"
 date: 2017-02-05 13:02:06 -0700
 post_author: Alban Diquet
 categories: ios ssl
