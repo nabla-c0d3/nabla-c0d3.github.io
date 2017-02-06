@@ -82,7 +82,7 @@ Also, _libnetwork.dylib_ already existed on iOS 9, but did not have a lot of the
     br set -n nw_protocol_coretls_add_input_handler
     WARNING:  Unable to resolve breakpoint to any actual locations.
 
-Because _SecureTransport_ is no longer used by higher level APIs (such as _CFNetwork_ or _NSURLSession_) on iOS 10, patching _SecureTransport_ functions like SSL Kill Switch does has no effect on an App's TLS connections. This expains why the tool compltely stopped working.
+Because _SecureTransport_ is no longer used by higher level APIs (such as _CFNetwork_ or _NSURLSession_) on iOS 10, patching _SecureTransport_ functions like SSL Kill Switch does has no effect on an App's TLS connections. This expains why the tool completely stopped working.
 
 I wonder if these changes mean that Apple will eventually deprecate _SecureTransport_ and expose the iOS 10 network/TLS stack as a public API? 
 
@@ -107,7 +107,9 @@ As a random experimentation, I patched this function (using Cydia Substrate) to 
         return errSecSuccess;
     }
 
-With the patch applied, the `trustRef` does not contain anything at the end of the call to `tls_helper_create_peer_trust`. I was expecting this change to completely crash the App during the TLS handshake, as whatever code that is doing the TLS validation (probably inside `CFNetwork`) would get a `NULL` trust object as the server's identity (which can never happen), and wouldn't be able to process further. However, instead of crashing, it completely disabled all TLS validation and pinning, which is exactly what I was trying to do!
+With the patch applied, the `trustRef` does not contain anything at the end of the call to `tls_helper_create_peer_trust`.
+
+I was expecting this change to completely crash the App during the TLS handshake, as whatever code that is doing the TLS validation (probably inside `CFNetwork`) would get a `NULL` trust object as the server's identity (which can never happen), and wouldn't be able to process further. However, instead of crashing, it completely disabled all TLS validation and pinning, which is exactly what I was trying to do!
 
 It is still unclear to me why this actually works; it seems like the validation logic or callback somehow is ignored when the server's `SecTrustRef` is `NULL`. This is obviously not a vulnerability, as I am injecting code in the App to trigger this behavior, but it is a bit surprising to me. If I ever have the time, I will dig further into this to try to understand what's going on. 
 
