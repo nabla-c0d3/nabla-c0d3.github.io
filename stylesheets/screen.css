@@ -292,10 +292,6 @@ a:hover {
     border-bottom: 1px solid #ccc
 }
 
-#main-nav>ul ul li:hover {
-    background: #d5d5d5
-}
-
 #main-nav>ul ul li:first-of-type {
     border-top: none
 }
@@ -936,10 +932,6 @@ article .entry-content table th {
 
 article .entry-content table td {
     text-align: center
-}
-
-article .entry-content table tr:nth-of-type(2n) {
-    background: #d5d5d5
 }
 
 article .entry-content .caption {
