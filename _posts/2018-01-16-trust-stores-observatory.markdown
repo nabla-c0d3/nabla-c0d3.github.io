@@ -23,7 +23,7 @@ The Trust Stores Observatory currently supports the following platforms:
 * **Microsoft Windows**: every two months, Microsoft releases the list of root certificates via an Excel spreadsheet available at [https://aka.ms/trustcertpartners](https://aka.ms/trustcertpartners). The actual certificates (in PEM or DER format) are not provided and a few rows within the spreadsheet are missing some information (such as the root certificate's fingerprint).
 * **Mozilla NSS**: the list of root certificates is stored in source code, in a custom format which is convenient for NSS to build from, at [https://hg.mozilla.org/mozilla-central/raw-file/tip/security/nss/lib/ckfw/builtins/certdata.txt](https://hg.mozilla.org/mozilla-central/raw-file/tip/security/nss/lib/ckfw/builtins/certdata.txt).
 * **Apple iOS and macOS**: Apple maintains one web page [for iOS](https://support.apple.com/en-us/HT204132) and one [for macOS](https://support.apple.com/en-us/HT202858) with the list of root certificates for each major release. The actual certificates (in PEM or DER format) are not provided.
-* **Googe AOSP**: the list of trusted root certificates is available in PEM format in the Android Open Source Project's repository at [https://android.googlesource.com/platform/system/ca-certificates](https://android.googlesource.com/platform/system/ca-certificates).
+* **Google AOSP**: the list of trusted root certificates is available in PEM format in the Android Open Source Project's repository at [https://android.googlesource.com/platform/system/ca-certificates](https://android.googlesource.com/platform/system/ca-certificates).
 
 ### How it works
 
