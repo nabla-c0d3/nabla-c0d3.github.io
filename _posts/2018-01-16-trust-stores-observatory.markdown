@@ -6,7 +6,7 @@ post_author: Alban Diquet
 categories: ssl
 ---
 
-For anyone interested in SSL/TLS, certificates, and trust, it has always been surpisingly difficult to get the list of root certificates trusted on each of the major platforms (Mozilla, Microsoft, etc.). 
+For anyone interested in SSL/TLS, certificates, and trust, it has always been surprisingly difficult to get the list of root certificates trusted on each of the major platforms (Mozilla, Microsoft, etc.). 
 
 The only tool that I am aware of is the [Certification Authority Trust Tracker (CATT)](https://github.com/kirei/catt), which I have been using for many years in order to retrieve the root stores to be used in [SSLyze](https://github.com/nabla-c0d3/sslyze), the SSL scanning tool I work on. However and as useful as it has been, CATT has to be run manually every time, and is not easy to extend or troubleshoot as it relies on several scripts written in Bash or Perl.
 
