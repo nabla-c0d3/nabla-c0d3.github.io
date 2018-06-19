@@ -178,7 +178,7 @@ If you are a developer, here is a summary of the changes to implement in your ap
 * If your application is using `NSCoding` for object serialization, switch to [`NSSecureCoding`][nssecurecoding] in order to prevent object substitution attacks.
 * If you application is using the now-deprecated`UIWebView` API, switch to [`WKWebView`][wkwebview].
 
-#### Long term
+### Long term
 
 * If your application is using a low-level network API (such as BSD sockets, SecureTransport or CFNetwork) switch to the [`Network` framework][network].
 
