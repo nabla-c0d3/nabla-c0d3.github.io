@@ -17,46 +17,7 @@ Using SSLyze as a Python module makes it easy to implement SSL/TLS scanning as p
 
 This sample code scans the `www.google.com:443` endpoint to detect the list of SSL 3.0 cipher suites it accepts, whether it supports secure renegotiation, and will also review the server's certificate:
 
-    # Ensure we can connect to the server
-    server_info = ServerConnectivityInfo(hostname=u'www.google.com')
-    server_info.test_connectivity_to_server()
-
-    concurrent_scanner = ConcurrentScanner()
-
-    # Queue some scan commands
-    concurrent_scanner.queue_scan_command(server_info, Sslv30ScanCommand())
-    concurrent_scanner.queue_scan_command(server_info, SessionRenegotiationScanCommand())
-    concurrent_scanner.queue_scan_command(server_info, CertificateInfoScanCommand())
-
-    # Process the results
-    reneg_result = None
-    for scan_result in concurrent_scanner.get_results():
-        # All scan results have the corresponding scan_command and server_info as an attribute
-        print(u'\nReceived scan result for {} on host {}'.format(scan_result.scan_command.__class__.__name__,
-                                                                 scan_result.server_info.hostname))
-
-        # Sometimes a scan command can unexpectedly fail (as a bug); it is returned as a PluginRaisedExceptionResult
-        if isinstance(scan_result, PluginRaisedExceptionScanResult):
-            raise RuntimeError(u'Scan command failed: {}'.format(scan_result.as_text()))
-
-        # Each scan result has attributes with the information you're looking for, specific to each scan command
-        # All these attributes are documented within each scan command's module
-        if isinstance(scan_result.scan_command, Sslv30ScanCommand):
-            # Do something with the result
-            print(u'SSLV3 cipher suites')
-            for cipher in scan_result.accepted_cipher_list:
-                print(u'    {}'.format(cipher.name))
-
-        elif isinstance(scan_result.scan_command, SessionRenegotiationScanCommand):
-            reneg_result = scan_result
-            print(u'Client renegotiation: {}'.format(scan_result.accepts_client_renegotiation))
-            print(u'Secure renegotiation: {}'.format(scan_result.supports_secure_renegotiation))
-
-        elif isinstance(scan_result.scan_command, CertificateInfoScanCommand):
-            print(u'Server Certificate CN: {}'.format(
-                scan_result.certificate_chain[0].as_dict[u'subject'][u'commonName']
-            ))
-            
+<script src="https://gist.github.com/nabla-c0d3/989e37e6204a5e689eeb988321b48ca3.js"></script>
 
 ### Getting Started
 
