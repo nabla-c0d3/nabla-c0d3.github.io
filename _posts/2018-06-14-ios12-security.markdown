@@ -122,7 +122,7 @@ What has changed with iOS 12 is that `[NSKeyedArchiver init]` constructor is now
 
 ## The Network framework
 
-[The Network framework](https://developer.apple.com/documentation/network), introduced somewhere around iOS 9 or 10 has become a public API on iOS 12.
+[The Network framework](https://developer.apple.com/documentation/network), introduced [somewhere around iOS 9 or 10](/blog/2017/02/05/ios10-ssl-kill-switch/) has become a public API on iOS 12.
 
 It is a modern implementation of a low-level networking/socket API. As stated in the documentation, it is meant to replace all the other low-level networking APIs available on iOS: BSD sockets, [SecureTransport](https://developer.apple.com/documentation/security/secure_transport) and [CFNetwork](https://developer.apple.com/documentation/corefoundation/cfsocket):
 
@@ -171,7 +171,7 @@ If you are a developer, here is a summary of the changes to implement in your ap
 ### Short term
 
 * Add support for Password Autofill to your application. The ["Enabling Password AutoFill on a Text Input View" article](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_a_text_input_view) gives a good summary of the changes you need to implement in your app.
-* If your application's ATS policy still sets `NSAllowsArbitraryLoads` to `YES`, modify your policy by adding the required exemptions and domains, in order to be able to set `NSAllowsArbitraryLoads` to `NO`. More details on how to achieve this are available in [our ATS guide][ats-guide]. Sooner or later, your application will get blocked if it enables `NSAllowsArbitraryLoads`.
+* If your application's ATS policy still sets `NSAllowsArbitraryLoads` to `YES`, modify your policy by adding the required exemptions and domains, in order to be able to set `NSAllowsArbitraryLoads` to `NO`. More details on how to achieve this are available in [my ATS guide][ats-guide]. Sooner or later, your application will get blocked if it enables `NSAllowsArbitraryLoads`.
 
 ### Medium term
 
@@ -182,8 +182,10 @@ If you are a developer, here is a summary of the changes to implement in your ap
 
 * If your application is using a low-level network API (such as BSD sockets, SecureTransport or CFNetwork) switch to the [`Network` framework][network].
 
+_Note: I also published this article on [Data Theorem's technical blog](https://datatheorem.github.io)._
+
 [data-you-can-trust]: https://developer.apple.com/videos/play/wwdc2018/222/
-[ats-guide]: /ios/ssl/2016/08/14/ats-enforced-2017/
+[ats-guide]: /blog/2016/08/14/ats-enforced-2017/
 [nssecurecoding]: https://developer.apple.com/documentation/foundation/nssecurecoding
 [wkwebview]: https://developer.apple.com/documentation/webkit/wkwebview
 [network]: https://developer.apple.com/documentation/network
