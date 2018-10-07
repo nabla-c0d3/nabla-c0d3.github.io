@@ -6,7 +6,9 @@ post_author: Alban Diquet
 categories: ssl
 ---
 
-I just released [SSLyze 2.0.0][sslyze-gh], which, among other things, adds support for the final version of TLS 1.3. This release also introduces a lot of behind-the-scene improvements that I am going to describe in this article.
+I just released [SSLyze 2.0.0][sslyze-gh], my Python library for scanning the SSL/TLS configuration of a server.
+
+This release adds support for the final version of TLS 1.3, and also introduces a lot of behind-the-scene improvements that I am going to describe in this article.
 
 ### Changelog
 
