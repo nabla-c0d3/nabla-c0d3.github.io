@@ -20,3 +20,5 @@ paginate: 10          # Posts per page on the blog index
 highlighter: rouge 
 #root: /
 permalink: /blog/:year/:month/:day/:title/
+
+theme: jekyll-theme-dinky
