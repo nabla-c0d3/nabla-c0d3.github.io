@@ -151,7 +151,7 @@ This is obviously not a very clean runtime patch, and while everything seems to 
 The patch has other problems too:
 
 * It probably messes up code related to TLS-PSK cipher suites, which is when the `SSL_get_psk_identity()` function is actually used. However, these cipher suites are rarely used, especially in mobile applications.
-* The default BoringSSL callback that is part of the iOS network stack, `boringssl_context_certificate_verify_callback()`, is never called. This means that some state within the iOS networking stack is probably not getting set properly, and should lead to bugs.
+* The default BoringSSL callback that is part of the iOS network stack, `boringssl_context_certificate_verify_callback()`, is never called. This means that some state within the iOS networking stack is probably not getting set properly, which should lead to bugs.
 
 Lastly, there are a few extra things I didn't have time to do:
 
