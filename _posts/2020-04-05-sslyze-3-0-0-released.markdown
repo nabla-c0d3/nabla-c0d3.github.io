@@ -23,7 +23,7 @@ This was made worse by the fact that the formatting of the scan results returned
 
 ### Making scanning more reliable
 
-Starting with version 3.0.0, SSLyze enforces a maximum of 5 concurrent connections per server, regardless of the types of scan (cipher suites, Heartbleed) and the number of server to scans. This limit of 5 has been shown to provide a good balance between speed and success rate of the scans, and can also be lowered or increased as needed.
+Starting with version 3.0.0, SSLyze enforces a maximum of 5 concurrent connections per server, regardless of the types of scan (cipher suites, Heartbleed) and the number of server to scans. This limit of 5 has been shown to provide a good balance between speed and success rate of the scans, and can also be lowered or increased as needed. Multiple servers are still scanned concurrently (to allow for speedy scans), but with this limit of 5 concurrent connections per individual server.
 
 Implementing this logic required revisiting design decisions made almost a decade ago in the very first version of SSLyze. The code handling the concurrency was very complicated and used both multi-processing and multi-threading, as a naive way to speed up the scans and get around Python's [Global Interpreter Lock](https://realpython.com/python-gil/). Ultimately tho, SSLyze is an application that is mostly I/O-bound: its main functionality is to connect to servers and to send/receive data in order to test the servers' SSL configuration.
 
