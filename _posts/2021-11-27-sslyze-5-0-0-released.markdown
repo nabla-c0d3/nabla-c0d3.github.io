@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "SSLyze 5.0.0 Released"
-date: 2020-11-27 11:30:06 -0700
+date: 2021-11-27 11:30:06 -0700
 post_author: Alban Diquet
 categories: ssl
 ---
