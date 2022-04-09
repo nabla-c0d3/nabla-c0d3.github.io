@@ -10,15 +10,13 @@ github_username:  nabla-c0d3
 
 # Build settings
 markdown: kramdown
-#markdown: redcarpet
 permalink: pretty
-gems: [jekyll-paginate]
+plugins: [jekyll-paginate]
 
 
 paginate: 10          # Posts per page on the blog index
 
-highlighter: rouge 
-#root: /
+highlighter: rouge
 permalink: /blog/:year/:month/:day/:title/
 
 theme: jekyll-theme-dinky
