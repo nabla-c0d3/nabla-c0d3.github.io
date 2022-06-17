@@ -35,13 +35,13 @@ While this project may not be a web framework or library, I believe it does matc
 
 The work was to review and significantly refactor the code in SecureDrop responsible for encrypting documents submitted by whistleblowers to journalists. The goal was to make this code simpler and more readable, improve type-checking, and make its test suite more comprehensive. While working on this, I discovered a minor security issue in the encryption code, fixed it as part of the work, and added some unit tests to prevent future regressions.
 
-My changes were released as part of SecureDrop version 2.2.0 (entry #6174 in https://github.com/freedomofpress/securedrop/blob/release/2.2.0/changelog.md).
+My changes were released as part of SecureDrop version 2.2.0 (entry #6174 in [https://github.com/freedomofpress/securedrop/blob/release/2.2.0/changelog.md](https://github.com/freedomofpress/securedrop/blob/release/2.2.0/changelog.md)).
 
 I split my changes into three Pull Requests on GitHub, which contain more details about the changes:
 
-* Part 1/3 https://github.com/freedomofpress/securedrop/pull/6174 , which fixes the security issue.
-* Part 2/3 https://github.com/freedomofpress/securedrop/pull/6184 , which simplifies some fixtures in the test suite.
-* Part 3/3 https://github.com/freedomofpress/securedrop/pull/6160 , which simplifies the encryption code.
+* Part 1/3 [https://github.com/freedomofpress/securedrop/pull/6174](https://github.com/freedomofpress/securedrop/pull/6174), which fixes the security issue.
+* Part 2/3 [https://github.com/freedomofpress/securedrop/pull/6184](https://github.com/freedomofpress/securedrop/pull/6184), which simplifies some fixtures in the test suite.
+* Part 3/3 [https://github.com/freedomofpress/securedrop/pull/6160](https://github.com/freedomofpress/securedrop/pull/6160), which simplifies the encryption code.
 
 More details about the changes follow.
 
@@ -56,4 +56,4 @@ While working on this refactoring, I built a new test suite that I designed to b
 * Each whistleblower that wants to submit documents has a GPG passphrase attached to their SecureDrop account, and stored on the SecureDrop server.
 * Because of how the GPG agent was configured, GPG passphrases were automatically cached by the GPG binary, causing decryption operations to succeed even if the wrong GPG passphrase was supplied in the SecureDrop code.
 * This issue was un-exploitable by itself. If an attacker were able to discover another vulnerability in the server code, they could trick the SecureDrop server into decrypting another user's documents. However, after reviewing the server code with the SecureDrop team, no such vulnerability was found, making the initial issue un-exploitable in the current code base.
-* There are more details about the issue in the first PR at https://github.com/freedomofpress/securedrop/pull/6174 .
+* There are more details about the issue in the first PR at [https://github.com/freedomofpress/securedrop/pull/6174](https://github.com/freedomofpress/securedrop/pull/6174).
